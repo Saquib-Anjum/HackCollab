@@ -3,6 +3,7 @@ import Process from "./Process";
 import Footer from "../components/Footer";
 import CallToAction from "../components/CallToAction";
 import ImpactMap from "../components/ImpactMap";
+import Mission from "./Mission";
 
 const processSteps = [
   {
@@ -403,146 +404,10 @@ const Home = () => {
 
 
       {/* =====================================================
-          IMPACT / MAP PLACEHOLDER
+          mission
       ===================================================== */}
 
-      <section className="bg-gradient-to-b from-white to-gray-50 py-16">
-
-        <div className="mx-auto max-w-7xl px-6">
-
-          <div className="mb-10 text-center">
-
-            <p className="text-sm font-black uppercase tracking-[0.2em] text-green-600">
-              Our Mission
-            </p>
-
-            <h2 className="mt-2 text-3xl font-black text-gray-900 md:text-5xl">
-              Turning Surplus Into
-              <span className="text-green-600">
-                {" "}Impact
-              </span>
-            </h2>
-
-            <p className="mx-auto mt-4 max-w-2xl text-gray-500">
-              Every donation can become a meal for someone who needs it.
-            </p>
-
-          </div>
-
-          <div
-            className="
-              relative
-              overflow-hidden
-              rounded-[32px]
-              border
-              border-green-100
-              bg-gradient-to-br
-              from-green-50
-              via-white
-              to-emerald-50
-              p-8
-              shadow-[0_20px_70px_rgba(16,185,129,0.08)]
-              md:p-12
-            "
-          >
-
-            <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-green-200/30 blur-3xl" />
-
-            <div className="pointer-events-none absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-emerald-200/30 blur-3xl" />
-
-            <div className="relative grid items-center gap-10 md:grid-cols-2">
-
-              <div>
-
-                <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-100 px-4 py-2 text-xs font-bold uppercase tracking-wider text-green-700">
-                  <span className="h-2 w-2 animate-pulse rounded-full bg-green-500" />
-                  FoodBridge Impact
-                </div>
-
-                <h3 className="text-3xl font-black leading-tight text-gray-900 md:text-4xl">
-                  One donation.
-                  <br />
-                  <span className="text-green-600">
-                    One less wasted meal.
-                  </span>
-                </h3>
-
-                <p className="mt-5 max-w-lg leading-7 text-gray-500">
-                  FoodBridge creates a connection between people with extra
-                  food and communities that need support.
-                </p>
-
-                <div className="mt-7 flex flex-wrap gap-3">
-
-                  <div className="rounded-2xl border border-green-100 bg-white px-5 py-4 shadow-sm">
-                    <p className="text-2xl font-black text-green-600">
-                      12K+
-                    </p>
-                    <p className="text-xs font-medium text-gray-500">
-                      Meals donated
-                    </p>
-                  </div>
-
-                  <div className="rounded-2xl border border-green-100 bg-white px-5 py-4 shadow-sm">
-                    <p className="text-2xl font-black text-green-600">
-                      9K+
-                    </p>
-                    <p className="text-xs font-medium text-gray-500">
-                      Meals delivered
-                    </p>
-                  </div>
-
-                </div>
-
-              </div>
-
-
-              {/* VISUAL */}
-
-              <div className="relative flex min-h-[280px] items-center justify-center">
-
-                <div className="absolute h-64 w-64 animate-pulse rounded-full bg-green-200/40 blur-3xl" />
-
-                <div className="relative flex h-64 w-64 items-center justify-center rounded-full border border-green-200 bg-white/80 shadow-[0_20px_70px_rgba(16,185,129,0.15)] backdrop-blur">
-
-                  <div className="absolute h-48 w-48 rounded-full border border-dashed border-green-300 animate-spin-slow" />
-
-                  <div className="absolute -top-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-green-500 text-2xl shadow-lg">
-                    🥗
-                  </div>
-
-                  <div className="absolute -right-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500 text-2xl shadow-lg">
-                    🔎
-                  </div>
-
-                  <div className="absolute -bottom-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-500 text-2xl shadow-lg">
-                    ❤️
-                  </div>
-
-                  <div className="flex h-28 w-28 flex-col items-center justify-center rounded-full bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-[0_15px_40px_rgba(16,185,129,0.35)]">
-
-                    <span className="text-4xl">
-                      🍽️
-                    </span>
-
-                    <span className="mt-1 text-[10px] font-black uppercase tracking-wider">
-                      Impact
-                    </span>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </section>
-
+       <Mission/>
 
       {/* =====================================================
           HOW IT WORKS
