@@ -31,6 +31,7 @@ connectDB();
 const allowedOrigins = [
   "http://localhost:5173",
   "https://smart-food-waste-frontend.vercel.app",
+  "https://foodbridge-smoky.vercel.app/",
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
