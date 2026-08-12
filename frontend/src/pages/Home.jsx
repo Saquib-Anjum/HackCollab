@@ -948,7 +948,7 @@ const Home = () => {
                 </span>
 
                 <span className="font-bold text-green-400">
-                  Mr.Dev
+                  Team ZeroByteX
                 </span>
 
               </div>
