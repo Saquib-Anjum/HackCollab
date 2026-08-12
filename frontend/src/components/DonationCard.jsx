@@ -1,3 +1,5 @@
+import { MapPin, Clock, Timer, Utensils } from "lucide-react";
+
 const DonationCard = ({ donation }) => {
   const statusStyles = {
     AVAILABLE: "bg-green-100 text-green-700",
@@ -8,68 +10,51 @@ const DonationCard = ({ donation }) => {
 
   return (
     <div className="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition">
-
       {/* Image Placeholder */}
-      <div className="h-40 bg-green-50 flex items-center justify-center text-6xl">
-        🍱
+      <div className="h-40 bg-green-50 flex items-center justify-center text-green-500">
+        <Utensils className="h-14 w-14" strokeWidth={1.5} />
       </div>
 
       <div className="p-5">
-
         {/* Food */}
         <div className="flex items-start justify-between gap-3">
-
           <div>
             <h2 className="text-xl font-bold text-gray-900">
               {donation.foodType}
             </h2>
-
-            <p className="text-gray-500 text-sm mt-1">
-              {donation.category}
-            </p>
+            <p className="text-gray-500 text-sm mt-1">{donation.category}</p>
           </div>
 
           <span
             className={`px-3 py-1 rounded-full text-xs font-semibold ${
-              statusStyles[donation.status] ||
-              "bg-gray-100 text-gray-600"
+              statusStyles[donation.status] || "bg-gray-100 text-gray-600"
             }`}
           >
             {donation.status}
           </span>
-
         </div>
 
         {/* Details */}
         <div className="mt-5 space-y-3 text-sm">
-
           <div className="flex justify-between">
-            <span className="text-gray-500">
-              Quantity
-            </span>
-
+            <span className="text-gray-500">Quantity</span>
             <span className="font-medium text-gray-800">
               {donation.quantity} {donation.unit}
             </span>
           </div>
 
           <div>
-            <p className="text-gray-500">
-              Pickup Location
-            </p>
-
-            <p className="font-medium text-gray-800 mt-1">
-              📍 {donation.pickupLocation}
+            <p className="text-gray-500">Pickup Location</p>
+            <p className="font-medium text-gray-800 mt-1 flex items-center gap-1.5">
+              <MapPin className="h-3.5 w-3.5 text-green-600 shrink-0" />
+              {donation.pickupLocation}
             </p>
           </div>
 
           <div>
-            <p className="text-gray-500">
-              Pickup Time
-            </p>
-
-            <p className="font-medium text-gray-800 mt-1">
-              🕐{" "}
+            <p className="text-gray-500">Pickup Time</p>
+            <p className="font-medium text-gray-800 mt-1 flex items-center gap-1.5">
+              <Clock className="h-3.5 w-3.5 text-blue-600 shrink-0" />
               {donation.pickupTime
                 ? new Date(donation.pickupTime).toLocaleString()
                 : "Not specified"}
@@ -77,20 +62,15 @@ const DonationCard = ({ donation }) => {
           </div>
 
           <div>
-            <p className="text-gray-500">
-              Available Until
-            </p>
-
-            <p className="font-medium text-red-600 mt-1">
-              ⏰{" "}
+            <p className="text-gray-500">Available Until</p>
+            <p className="font-medium text-red-600 mt-1 flex items-center gap-1.5">
+              <Timer className="h-3.5 w-3.5 text-red-500 shrink-0" />
               {donation.expiryTime
                 ? new Date(donation.expiryTime).toLocaleString()
                 : "Not specified"}
             </p>
           </div>
-
         </div>
-
       </div>
     </div>
   );

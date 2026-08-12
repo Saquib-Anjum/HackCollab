@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
+import Analytics from './pages/Analytics'
 import { setupDonationSocket } from "./redux/slices/donationSlice";
 import { fetchMyRewards } from "./redux/slices/rewardSlice";
 
@@ -87,7 +87,7 @@ function App() {
         <Route path="/register" element={<Register />} />
 
         <Route path="/leaderboard" element={<Leaderboard />} />
-
+        <Route path="/analytics" element={<Analytics />} />
         {/* =========================
             DONOR ROUTES
         ========================= */}

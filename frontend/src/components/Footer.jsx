@@ -1,21 +1,18 @@
 import React from "react";
+import { Leaf, Heart } from "lucide-react";
 
 const Footer = () => {
   return (
     <footer className="bg-gray-950 text-gray-300">
-
       <div className="mx-auto max-w-7xl px-6 py-12 md:py-14">
 
         {/* =====================================================
             MAIN FOOTER
         ===================================================== */}
-
         <div className="flex flex-col gap-10 md:flex-row md:items-center md:justify-between">
 
           {/* BRAND */}
-
           <div className="max-w-xl">
-
             <h2 className="text-3xl font-black tracking-tight text-white">
               Food
               <span className="text-green-500">Bridge</span>
@@ -43,37 +40,26 @@ const Footer = () => {
                 text-green-400
               "
             >
-              <span className="text-sm">🌱</span>
-
+              <Leaf className="h-3.5 w-3.5" />
               <span>Reduce Waste. Create Impact.</span>
             </div>
-
           </div>
 
-
           {/* RIGHT INFO */}
-
           <div className="md:text-right">
-
             <p className="text-sm text-gray-400">
-
               © 2026{" "}
-
               <span className="font-semibold text-white">
                 FoodBridge
               </span>
-
               . All rights reserved.
-
             </p>
 
             <p className="mt-2 text-xs text-gray-500">
               Reduce Waste. Share Food. Create Impact.
             </p>
 
-
             {/* DEVELOPER */}
-
             <div
               className="
                 mt-5
@@ -92,41 +78,31 @@ const Footer = () => {
                 hover:bg-green-500/5
               "
             >
-
               <span className="text-xs text-gray-500">
                 Built with
               </span>
 
-              <span className="text-xs text-red-400">
-                ❤️
-              </span>
+              <Heart className="h-3.5 w-3.5 text-red-400 fill-red-400" />
 
               <span className="text-xs text-gray-500">
                 by
               </span>
 
               <span className="text-sm font-bold text-green-400">
-                Mr.Dev
+                Team ZeroBiteX
               </span>
-
             </div>
-
           </div>
-
         </div>
-
 
         {/* =====================================================
             DIVIDER
         ===================================================== */}
-
         <div className="my-10 h-px bg-white/10" />
-
 
         {/* =====================================================
             BOTTOM
         ===================================================== */}
-
         <div
           className="
             flex
@@ -141,7 +117,6 @@ const Footer = () => {
             sm:text-left
           "
         >
-
           <p>
             Every meal saved is a step toward a better tomorrow.
           </p>
@@ -149,11 +124,8 @@ const Footer = () => {
           <p className="text-gray-600">
             FoodBridge • Smart Food Donation Platform
           </p>
-
         </div>
-
       </div>
-
     </footer>
   );
 };

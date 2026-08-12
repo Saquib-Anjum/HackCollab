@@ -8,7 +8,7 @@ const express = require("express");
 const cors = require("cors");
 const http = require("http");
 const { Server } = require("socket.io");
-
+const analyticsRoutes = require("./routes/analyticsRoute");
 const connectDB = require("./config/db");
 
 const authRoutes = require("./routes/authRoutes");
@@ -77,6 +77,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/admin", adminRoutes);
 // Reward System
 app.use("/api/rewards", rewardRoutes);
+app.use("/api/analytics", analyticsRoutes);
 // =====================================================
 // HOME
 // =====================================================

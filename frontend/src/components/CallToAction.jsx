@@ -1,5 +1,6 @@
 import React from "react";
-import { Link } from "react-router-dom"; 
+import { Link } from "react-router-dom";
+import { Heart, UtensilsCrossed, Sparkles } from "lucide-react";
 
 const CallToAction = () => {
   return (
@@ -18,20 +19,17 @@ const CallToAction = () => {
 
       {/* Main Section Background (White/Off-white for contrast) */}
       <section className="bg-white py-24 md:py-32 relative overflow-hidden">
-        
         <div className="mx-auto max-w-6xl px-4 sm:px-6 relative z-10">
-          
           {/* =====================================================
               MAIN CTA CARD - DEEP PREMIUM GRADIENT
           ===================================================== */}
           <div className="group relative overflow-hidden rounded-[3rem] bg-gradient-to-br from-[#022c22] via-[#065f46] to-[#047857] px-8 py-16 text-center shadow-[0_30px_80px_rgba(4,120,87,0.3)] md:px-16 md:py-20 lg:py-24">
-
             {/* =====================================================
                 BACKGROUND DECORATIONS & GLOWS
             ===================================================== */}
             {/* Top Right Warm Glow */}
             <div className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-amber-500/20 blur-[100px] transition-transform duration-1000 group-hover:scale-110" />
-            
+
             {/* Bottom Left Emerald Glow */}
             <div className="pointer-events-none absolute -bottom-32 -left-32 h-96 w-96 rounded-full bg-emerald-400/20 blur-[100px] transition-transform duration-1000 group-hover:scale-110" />
 
@@ -42,23 +40,32 @@ const CallToAction = () => {
                 FLOATING 3D-LIKE ICONS (DECORATION)
             ===================================================== */}
             {/* Floating Heart */}
-            <div className="absolute left-[10%] top-[20%] hidden md:block" style={{ animation: 'float 6s ease-in-out infinite' }}>
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-3xl shadow-2xl backdrop-blur-md">
-                ❤️
-              </div>
-            </div>
-            
-            {/* Floating Bowl */}
-            <div className="absolute right-[12%] top-[30%] hidden md:block" style={{ animation: 'float-reverse 7s ease-in-out infinite' }}>
-              <div className="flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-white/5 text-2xl shadow-2xl backdrop-blur-md">
-                🍲
+            <div
+              className="absolute left-[10%] top-[20%] hidden md:block"
+              style={{ animation: "float 6s ease-in-out infinite" }}
+            >
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-white/5 shadow-2xl backdrop-blur-md text-rose-400">
+                <Heart className="h-8 w-8 fill-rose-400" />
               </div>
             </div>
 
-            {/* Floating Star/Sparkle */}
-            <div className="absolute bottom-[20%] left-[15%] hidden md:block" style={{ animation: 'float-reverse 5s ease-in-out infinite' }}>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 text-xl shadow-2xl backdrop-blur-md text-amber-300">
-                ✨
+            {/* Floating Bowl / Food */}
+            <div
+              className="absolute right-[12%] top-[30%] hidden md:block"
+              style={{ animation: "float-reverse 7s ease-in-out infinite" }}
+            >
+              <div className="flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-white/5 shadow-2xl backdrop-blur-md text-amber-300">
+                <UtensilsCrossed className="h-7 w-7" />
+              </div>
+            </div>
+
+            {/* Floating Sparkle */}
+            <div
+              className="absolute bottom-[20%] left-[15%] hidden md:block"
+              style={{ animation: "float-reverse 5s ease-in-out infinite" }}
+            >
+              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 shadow-2xl backdrop-blur-md text-amber-300">
+                <Sparkles className="h-6 w-6" />
               </div>
             </div>
 
@@ -66,7 +73,6 @@ const CallToAction = () => {
                 MAIN CONTENT
             ===================================================== */}
             <div className="relative z-20 flex flex-col items-center">
-              
               {/* SLOGAN BADGE */}
               <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-amber-400/30 bg-amber-400/10 px-5 py-2 text-sm font-bold uppercase tracking-[0.2em] text-amber-300 backdrop-blur-md">
                 <span className="relative flex h-2 w-2">
@@ -86,13 +92,13 @@ const CallToAction = () => {
 
               {/* SUBTITLE */}
               <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-emerald-100/80 md:text-xl">
-                Every single day, perfectly good food gets thrown away while millions sleep hungry. 
-                Be the bridge. Donate your extra food today and bring a smile to someone's face.
+                Every single day, perfectly good food gets thrown away while
+                millions sleep hungry. Be the bridge. Donate your extra food
+                today and bring a smile to someone's face.
               </p>
 
               {/* ACTION AREA */}
               <div className="mt-12 flex flex-col items-center gap-6 sm:flex-row sm:justify-center">
-                
                 {/* Primary Button */}
                 <Link
                   to="/register"
@@ -123,7 +129,7 @@ const CallToAction = () => {
                   <span className="relative z-10 text-lg tracking-wide uppercase">
                     Start Donating Now
                   </span>
-                  
+
                   {/* Icon */}
                   <svg
                     className="relative z-10 h-6 w-6 transition-transform duration-300 group-hover:translate-x-2"
@@ -141,7 +147,6 @@ const CallToAction = () => {
                     <path d="m12 5 7 7-7 7" />
                   </svg>
                 </Link>
-
               </div>
 
               {/* =====================================================
@@ -158,11 +163,14 @@ const CallToAction = () => {
                   </div>
                 </div>
                 <div className="text-left">
-                  <p className="text-sm font-bold text-white">Join 2,500+ Donors</p>
-                  <p className="text-xs text-emerald-200/70">Making an impact daily</p>
+                  <p className="text-sm font-bold text-white">
+                    Join 2,500+ Donors
+                  </p>
+                  <p className="text-xs text-emerald-200/70">
+                    Making an impact daily
+                  </p>
                 </div>
               </div>
-
             </div>
           </div>
         </div>

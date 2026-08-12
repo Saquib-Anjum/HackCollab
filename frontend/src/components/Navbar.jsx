@@ -2,6 +2,25 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
+import {
+  Trophy,
+  LayoutDashboard,
+  BarChart3,
+  Utensils,
+  Package,
+  ChevronDown,
+  Coins,
+  LogOut,
+  Menu,
+  X,
+  Search,
+  Heart,
+  Users,
+  House,
+  LogIn,
+  UserPlus,
+} from "lucide-react";
+
 import { logout } from "../redux/slices/authSlice";
 import { fetchMyRewards } from "../redux/slices/rewardSlice";
 
@@ -11,12 +30,16 @@ const Navbar = () => {
 
   const { token, user } = useSelector((state) => state.auth);
 
-  // Pull real-time reward stats from Redux
+  // Reward data
   const { myRewards } = useSelector((state) => state.rewards);
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const [donationOpen, setDonationOpen] = useState(false);
 
-  // Fetch rewards on mount if user is a logged-in donor
+  // =====================================================
+  // FETCH REWARDS
+  // =====================================================
+
   useEffect(() => {
     if (token && user?.role === "donor") {
       dispatch(fetchMyRewards());
@@ -30,11 +53,12 @@ const Navbar = () => {
   const handleLogout = () => {
     dispatch(logout());
     setMenuOpen(false);
+    setDonationOpen(false);
     navigate("/login");
   };
 
   // =====================================================
-  // DASHBOARD
+  // DASHBOARD PATH
   // =====================================================
 
   const getDashboardPath = () => {
@@ -50,55 +74,47 @@ const Navbar = () => {
   };
 
   // =====================================================
-  // DESKTOP NAV LINK
+  // DESKTOP NAV ITEM
   // =====================================================
 
   const navLinkClass = `
     group
     relative
-    px-4
+    flex
+    items-center
+    gap-2
+    px-3.5
     py-2.5
     rounded-xl
-    text-[15px]
+    text-[14px]
     font-semibold
-    tracking-[-0.01em]
-    text-gray-600
+    text-slate-600
+    whitespace-nowrap
     transition-all
-    duration-300
-    ease-out
-    hover:-translate-y-[1px]
+    duration-200
     hover:text-emerald-700
-    hover:bg-gradient-to-r
-    hover:from-emerald-50
-    hover:via-green-50
-    hover:to-emerald-50
-    hover:shadow-[0_5px_20px_rgba(16,185,129,0.12)]
+    hover:bg-emerald-50
   `;
 
   // =====================================================
-  // MOBILE NAV LINK
+  // MOBILE NAV ITEM
   // =====================================================
 
   const mobileLinkClass = `
-    group
-    block
+    flex
+    items-center
+    gap-3
+    w-full
     px-4
     py-3
     rounded-xl
     text-[15px]
     font-semibold
-    tracking-[-0.01em]
-    text-gray-700
+    text-slate-700
     transition-all
-    duration-300
-    ease-out
-    hover:translate-x-1
+    duration-200
+    hover:bg-emerald-50
     hover:text-emerald-700
-    hover:bg-gradient-to-r
-    hover:from-emerald-50
-    hover:via-green-50
-    hover:to-emerald-50
-    hover:shadow-[0_5px_20px_rgba(16,185,129,0.10)]
   `;
 
   return (
@@ -107,109 +123,85 @@ const Navbar = () => {
         sticky
         top-0
         z-50
+        w-full
+        h-[76px]
+        bg-white
         border-b
-        border-gray-200/70
-        bg-white/90
-        backdrop-blur-xl
-        shadow-[0_4px_20px_rgba(0,0,0,0.04)]
+        border-slate-200
+        shadow-[0_2px_14px_rgba(15,23,42,0.04)]
       "
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1500px] mx-auto h-full px-5 sm:px-6 lg:px-8">
         {/* =================================================
-            NAVBAR
+            MAIN NAVBAR
         ================================================= */}
 
-        <div className="h-[74px] flex items-center justify-between">
+        <div className="h-full flex items-center justify-between">
           {/* =================================================
-              LOGO
+              LEFT SIDE - LOGO
           ================================================= */}
 
-          <Link to="/" className="group flex items-center gap-3">
-            {/* LOGO ICON */}
+          <Link
+            to="/"
+            className="
+              group
+              flex
+              items-center
+              gap-3
+              shrink-0
+            "
+          >
+            {/* LOGO */}
 
             <div
               className="
                 relative
                 w-11
                 h-11
-                rounded-[14px]
-                bg-gradient-to-br
-                from-emerald-500
-                via-green-600
-                to-emerald-700
+                rounded-full
+                bg-emerald-50
+                border
+                border-emerald-200
                 flex
                 items-center
                 justify-center
-                text-white
-                shadow-[0_6px_18px_rgba(16,185,129,0.25)]
+                shadow-sm
                 transition-all
-                duration-500
-                ease-out
-                group-hover:scale-110
-                group-hover:-rotate-3
-                group-hover:shadow-[0_10px_28px_rgba(16,185,129,0.35)]
+                duration-300
+                group-hover:scale-105
+                group-hover:shadow-[0_5px_20px_rgba(16,185,129,0.18)]
               "
             >
-              <span className="relative z-10 text-[23px]">🌱</span>
-
-              {/* GLOW */}
-
-              <span
-                className="
-                  absolute
-                  inset-0
-                  rounded-[14px]
-                  bg-emerald-400
-                  opacity-0
-                  blur-xl
-                  transition-all
-                  duration-500
-                  group-hover:opacity-30
-                "
+              <img
+                src="/logo.svg"
+                alt="Food Bridge"
+                className="w-8 h-8 object-contain"
               />
             </div>
 
-            {/* LOGO TEXT */}
+            {/* BRAND NAME */}
 
             <div className="leading-none">
               <h1
                 className="
-                  text-[25px]
-                  md:text-[28px]
+                  text-[26px]
                   font-black
-                  tracking-[-0.045em]
-                  text-gray-900
-                  transition-all
-                  duration-300
-                  group-hover:tracking-[-0.055em]
+                  tracking-[-0.055em]
+                  text-slate-900
                 "
               >
                 Food
-                <span
-                  className="
-                    text-emerald-600
-                    transition-colors
-                    duration-300
-                    group-hover:text-green-500
-                  "
-                >
-                  Bridge
-                </span>
+                <span className="text-emerald-600">Bridge</span>
               </h1>
 
               <p
                 className="
-                  hidden
-                  sm:block
-                  mt-1.5
-                  text-[9px]
+                  mt-1
+                  text-[8px]
                   font-bold
-                  tracking-[0.18em]
-                  text-gray-400
+                  tracking-[0.22em]
                   uppercase
-                  transition-colors
-                  duration-300
-                  group-hover:text-emerald-500
+                  text-emerald-600/70
                 "
               >
                 Smart Food Donation
@@ -218,492 +210,632 @@ const Navbar = () => {
           </Link>
 
           {/* =================================================
-              DESKTOP NAVIGATION
+              RIGHT SIDE
           ================================================= */}
 
-          <div className="hidden md:flex items-center gap-1">
-            {/* LEADERBOARD (Available to everyone) */}
-            <Link to="/leaderboard" className={navLinkClass}>
-              🏆 Leaderboard
-              <span
-                className="
-                  absolute
-                  bottom-[5px]
-                  left-4
-                  right-4
-                  h-[2px]
-                  rounded-full
-                  bg-gradient-to-r
-                  from-emerald-400
-                  to-green-500
-                  origin-left
-                  scale-x-0
-                  transition-transform
-                  duration-300
-                  group-hover:scale-x-100
-                "
-              />
-            </Link>
+          <div className="flex items-center">
+            {/* =================================================
+                DESKTOP NAVIGATION
+            ================================================= */}
 
-            {!token ? (
-              <>
-                {/* HOME */}
+            <div className="hidden lg:flex items-center gap-1">
+              {!token ? (
+                <>
+                  {/* =================================================
+                      LEADERBOARD
+                  ================================================= */}
 
-                <Link to="/" className={navLinkClass}>
-                  Home
-                  <span
+                  <Link to="/leaderboard" className={navLinkClass}>
+                    <Trophy size={17} strokeWidth={2.2} />
+
+                    <span>Leaderboard</span>
+
+                    <span
+                      className="
+                        absolute
+                        bottom-1
+                        left-3.5
+                        right-3.5
+                        h-[2px]
+                        rounded-full
+                        bg-emerald-500
+                        origin-left
+                        scale-x-0
+                        transition-transform
+                        duration-200
+                        group-hover:scale-x-100
+                      "
+                    />
+                  </Link>
+
+                  {/* =================================================
+                      HOME
+                  ================================================= */}
+
+                  <Link to="/" className={navLinkClass}>
+                    <House size={17} strokeWidth={2.2} />
+
+                    <span>Home</span>
+
+                    <span
+                      className="
+                        absolute
+                        bottom-1
+                        left-3.5
+                        right-3.5
+                        h-[2px]
+                        rounded-full
+                        bg-emerald-500
+                        origin-left
+                        scale-x-0
+                        transition-transform
+                        duration-200
+                        group-hover:scale-x-100
+                      "
+                    />
+                  </Link>
+
+                  {/* =================================================
+                      LOGIN
+                  ================================================= */}
+
+                  <Link to="/login" className={navLinkClass}>
+                    <LogIn size={17} strokeWidth={2.2} />
+
+                    <span>Login</span>
+                  </Link>
+
+                  {/* =================================================
+                      REGISTER
+                  ================================================= */}
+
+                  <Link
+                    to="/register"
                     className="
-                      absolute
-                      bottom-[5px]
-                      left-4
-                      right-4
-                      h-[2px]
-                      rounded-full
-                      bg-gradient-to-r
-                      from-emerald-400
-                      to-green-500
-                      origin-left
-                      scale-x-0
-                      transition-transform
-                      duration-300
-                      group-hover:scale-x-100
-                    "
-                  />
-                </Link>
-
-                {/* LOGIN */}
-
-                <Link to="/login" className={navLinkClass}>
-                  Login
-                  <span
-                    className="
-                      absolute
-                      bottom-[5px]
-                      left-4
-                      right-4
-                      h-[2px]
-                      rounded-full
-                      bg-gradient-to-r
-                      from-emerald-400
-                      to-green-500
-                      origin-left
-                      scale-x-0
-                      transition-transform
-                      duration-300
-                      group-hover:scale-x-100
-                    "
-                  />
-                </Link>
-
-                {/* REGISTER */}
-
-                <Link
-                  to="/register"
-                  className="
-                    group/register
-                    relative
-                    isolate
-                    overflow-hidden
-                    ml-2
-                    px-6
-                    py-2.5
-                    rounded-xl
-                    border
-                    border-emerald-600
-                    bg-gradient-to-r
-                    from-emerald-600
-                    to-green-600
-                    text-white
-                    text-[15px]
-                    font-bold
-                    tracking-[-0.01em]
-                    shadow-[0_6px_20px_rgba(16,185,129,0.22)]
-                    transition-all
-                    duration-300
-                    hover:-translate-y-0.5
-                    hover:text-emerald-700
-                    hover:shadow-[0_10px_30px_rgba(16,185,129,0.22)]
-                  "
-                >
-                  {/* WHITE / EMERALD HOVER */}
-
-                  <span
-                    className="
-                      absolute
-                      inset-0
-                      -z-10
-                      translate-y-full
+                      ml-2
+                      flex
+                      items-center
+                      gap-2
+                      px-5
+                      py-2.5
                       rounded-xl
-                      bg-gradient-to-r
-                      from-white
-                      via-emerald-50
-                      to-white
-                      transition-transform
-                      duration-500
-                      ease-out
-                      group-hover/register:translate-y-0
-                    "
-                  />
-
-                  {/* SHINE */}
-
-                  <span
-                    className="
-                      absolute
-                      top-0
-                      -left-20
-                      h-full
-                      w-12
-                      rotate-12
-                      bg-white/50
-                      blur-md
+                      bg-emerald-600
+                      text-white
+                      text-sm
+                      font-bold
+                      shadow-[0_5px_18px_rgba(16,185,129,0.18)]
                       transition-all
-                      duration-700
-                      group-hover/register:left-[120%]
+                      duration-200
+                      hover:bg-emerald-700
+                      hover:-translate-y-[1px]
                     "
-                  />
+                  >
+                    <UserPlus size={17} />
+                    Register
+                  </Link>
+                </>
+              ) : (
+                <>
+                  {/* =================================================
+                      LEADERBOARD
+                      IMPORTANT: SEPARATE FROM ANALYTICS
+                  ================================================= */}
 
-                  <span className="relative z-10">Register</span>
-                </Link>
-              </>
-            ) : (
-              <>
-                {/* DASHBOARD */}
+                  <Link to="/leaderboard" className={navLinkClass}>
+                    <Trophy size={17} strokeWidth={2.2} />
 
-                <Link to={getDashboardPath()} className={navLinkClass}>
-                  Dashboard
-                  <span
-                    className="
-                      absolute
-                      bottom-[5px]
-                      left-4
-                      right-4
-                      h-[2px]
-                      rounded-full
-                      bg-gradient-to-r
-                      from-emerald-400
-                      to-green-500
-                      origin-left
-                      scale-x-0
-                      transition-transform
-                      duration-300
-                      group-hover:scale-x-100
-                    "
-                  />
-                </Link>
+                    <span>Leaderboard</span>
 
-                {/* DONOR */}
+                    <span
+                      className="
+                        absolute
+                        bottom-1
+                        left-3.5
+                        right-3.5
+                        h-[2px]
+                        rounded-full
+                        bg-emerald-500
+                        origin-left
+                        scale-x-0
+                        transition-transform
+                        duration-200
+                        group-hover:scale-x-100
+                      "
+                    />
+                  </Link>
+
+                  {/* =================================================
+                      DASHBOARD
+                  ================================================= */}
+
+                  <Link to={getDashboardPath()} className={navLinkClass}>
+                    <LayoutDashboard size={17} strokeWidth={2.2} />
+
+                    <span>Dashboard</span>
+
+                    <span
+                      className="
+                        absolute
+                        bottom-1
+                        left-3.5
+                        right-3.5
+                        h-[2px]
+                        rounded-full
+                        bg-emerald-500
+                        origin-left
+                        scale-x-0
+                        transition-transform
+                        duration-200
+                        group-hover:scale-x-100
+                      "
+                    />
+                  </Link>
+
+                  {/* =================================================
+                      ANALYTICS
+                  ================================================= */}
+
+                  <Link to="/analytics" className={navLinkClass}>
+                    <BarChart3 size={17} strokeWidth={2.2} />
+
+                    <span>Analytics</span>
+
+                    <span
+                      className="
+                        absolute
+                        bottom-1
+                        left-3.5
+                        right-3.5
+                        h-[2px]
+                        rounded-full
+                        bg-emerald-500
+                        origin-left
+                        scale-x-0
+                        transition-transform
+                        duration-200
+                        group-hover:scale-x-100
+                      "
+                    />
+                  </Link>
+
+                  {/* =================================================
+                      DONATIONS DROPDOWN
+                      DONOR ONLY
+                  ================================================= */}
+
+                  {user?.role === "donor" && (
+                    <div
+                      className="relative"
+                      onMouseEnter={() => setDonationOpen(true)}
+                      onMouseLeave={() => setDonationOpen(false)}
+                    >
+                      {/* DONATIONS BUTTON */}
+
+                      <button
+                        type="button"
+                        className="
+                          group
+                          flex
+                          items-center
+                          gap-2
+                          px-3.5
+                          py-2.5
+                          rounded-xl
+                          text-[14px]
+                          font-semibold
+                          text-slate-600
+                          whitespace-nowrap
+                          transition-all
+                          duration-200
+                          hover:text-emerald-700
+                          hover:bg-emerald-50
+                        "
+                      >
+                        <Utensils size={17} strokeWidth={2.2} />
+
+                        <span>Donations</span>
+
+                        <ChevronDown
+                          size={14}
+                          strokeWidth={2.3}
+                          className={`
+                            transition-transform
+                            duration-200
+                            ${donationOpen ? "rotate-180" : ""}
+                          `}
+                        />
+                      </button>
+
+                      {/* =================================================
+                          DROPDOWN
+                      ================================================= */}
+
+                      <div
+                        className={`
+                          absolute
+                          top-full
+                          left-1/2
+                          -translate-x-1/2
+                          pt-2
+                          transition-all
+                          duration-200
+                          ${
+                            donationOpen
+                              ? "opacity-100 visible translate-y-0"
+                              : "opacity-0 invisible -translate-y-2"
+                          }
+                        `}
+                      >
+                        <div
+                          className="
+                            w-[230px]
+                            p-2
+                            rounded-2xl
+                            bg-white
+                            border
+                            border-slate-200
+                            shadow-[0_18px_45px_rgba(15,23,42,0.12)]
+                          "
+                        >
+                          {/* CREATE DONATION */}
+
+                          <Link
+                            to="/donor/create-donation"
+                            className="
+                              flex
+                              items-center
+                              gap-3
+                              px-3
+                              py-3
+                              rounded-xl
+                              transition-all
+                              duration-200
+                              hover:bg-emerald-50
+                              group
+                            "
+                          >
+                            <div
+                              className="
+                                w-9
+                                h-9
+                                rounded-lg
+                                bg-emerald-50
+                                text-emerald-600
+                                flex
+                                items-center
+                                justify-center
+                                shrink-0
+                                transition-colors
+                                group-hover:bg-emerald-100
+                              "
+                            >
+                              <Utensils size={17} />
+                            </div>
+
+                            <div>
+                              <p
+                                className="
+                                  text-sm
+                                  font-bold
+                                  text-slate-800
+                                  group-hover:text-emerald-700
+                                "
+                              >
+                                Create Donation
+                              </p>
+
+                              <p
+                                className="
+                                  text-[11px]
+                                  text-slate-400
+                                  mt-0.5
+                                "
+                              >
+                                Share surplus food
+                              </p>
+                            </div>
+                          </Link>
+
+                          {/* MY DONATIONS */}
+
+                          <Link
+                            to="/donor/my-donations"
+                            className="
+                              flex
+                              items-center
+                              gap-3
+                              px-3
+                              py-3
+                              rounded-xl
+                              transition-all
+                              duration-200
+                              hover:bg-emerald-50
+                              group
+                            "
+                          >
+                            <div
+                              className="
+                                w-9
+                                h-9
+                                rounded-lg
+                                bg-slate-100
+                                text-slate-600
+                                flex
+                                items-center
+                                justify-center
+                                shrink-0
+                                transition-all
+                                group-hover:bg-emerald-100
+                                group-hover:text-emerald-600
+                              "
+                            >
+                              <Package size={17} />
+                            </div>
+
+                            <div>
+                              <p
+                                className="
+                                  text-sm
+                                  font-bold
+                                  text-slate-800
+                                  group-hover:text-emerald-700
+                                "
+                              >
+                                My Donations
+                              </p>
+
+                              <p
+                                className="
+                                  text-[11px]
+                                  text-slate-400
+                                  mt-0.5
+                                "
+                              >
+                                View your donations
+                              </p>
+                            </div>
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* =================================================
+                      NGO / VOLUNTEER
+                  ================================================= */}
+
+                  {(user?.role === "ngo" || user?.role === "volunteer") && (
+                    <>
+                      <Link
+                        to="/ngo/available-donations"
+                        className={navLinkClass}
+                      >
+                        <Search size={17} strokeWidth={2.2} />
+
+                        <span>Available</span>
+                      </Link>
+
+                      <Link to="/ngo/my-claims" className={navLinkClass}>
+                        <Heart size={17} strokeWidth={2.2} />
+
+                        <span>My Claims</span>
+                      </Link>
+                    </>
+                  )}
+
+                  {/* =================================================
+                      ADMIN
+                  ================================================= */}
+
+                  {user?.role === "admin" && (
+                    <>
+                      <Link to="/admin/users" className={navLinkClass}>
+                        <Users size={17} strokeWidth={2.2} />
+
+                        <span>Users</span>
+                      </Link>
+
+                      <Link to="/admin/donations" className={navLinkClass}>
+                        <Package size={17} strokeWidth={2.2} />
+
+                        <span>Donations</span>
+                      </Link>
+                    </>
+                  )}
+                </>
+              )}
+            </div>
+
+            {/* =================================================
+                RIGHT USER SECTION
+            ================================================= */}
+
+            {token && (
+              <div
+                className="
+                  hidden
+                  lg:flex
+                  items-center
+                  ml-5
+                  pl-5
+                  border-l
+                  border-slate-200
+                  gap-4
+                "
+              >
+                {/* =================================================
+                    REWARDS
+                ================================================= */}
 
                 {user?.role === "donor" && (
-                  <>
-                    <Link to="/donor/create-donation" className={navLinkClass}>
-                      Create Donation
-                      <span
-                        className="
-                          absolute
-                          bottom-[5px]
-                          left-4
-                          right-4
-                          h-[2px]
-                          rounded-full
-                          bg-gradient-to-r
-                          from-emerald-400
-                          to-green-500
-                          origin-left
-                          scale-x-0
-                          transition-transform
-                          duration-300
-                          group-hover:scale-x-100
-                        "
-                      />
-                    </Link>
+                  <div
+                    className="
+                      flex
+                      items-center
+                      gap-2
+                      px-3
+                      py-1.5
+                      rounded-xl
+                      bg-emerald-50
+                      border
+                      border-emerald-200
+                      shadow-sm
+                    "
+                  >
+                    <Coins
+                      size={16}
+                      strokeWidth={2.2}
+                      className="text-emerald-600"
+                    />
 
-                    <Link to="/donor/my-donations" className={navLinkClass}>
-                      My Donations
-                      <span
-                        className="
-                          absolute
-                          bottom-[5px]
-                          left-4
-                          right-4
-                          h-[2px]
-                          rounded-full
-                          bg-gradient-to-r
-                          from-emerald-400
-                          to-green-500
-                          origin-left
-                          scale-x-0
-                          transition-transform
-                          duration-300
-                          group-hover:scale-x-100
-                        "
-                      />
-                    </Link>
-                  </>
-                )}
-
-                {/* NGO / VOLUNTEER */}
-
-                {(user?.role === "ngo" || user?.role === "volunteer") && (
-                  <>
-                    <Link
-                      to="/ngo/available-donations"
-                      className={navLinkClass}
-                    >
-                      Available Donations
-                      <span
-                        className="
-                          absolute
-                          bottom-[5px]
-                          left-4
-                          right-4
-                          h-[2px]
-                          rounded-full
-                          bg-gradient-to-r
-                          from-emerald-400
-                          to-green-500
-                          origin-left
-                          scale-x-0
-                          transition-transform
-                          duration-300
-                          group-hover:scale-x-100
-                        "
-                      />
-                    </Link>
-
-                    <Link to="/ngo/my-claims" className={navLinkClass}>
-                      My Claims
-                      <span
-                        className="
-                          absolute
-                          bottom-[5px]
-                          left-4
-                          right-4
-                          h-[2px]
-                          rounded-full
-                          bg-gradient-to-r
-                          from-emerald-400
-                          to-green-500
-                          origin-left
-                          scale-x-0
-                          transition-transform
-                          duration-300
-                          group-hover:scale-x-100
-                        "
-                      />
-                    </Link>
-                  </>
-                )}
-
-                {/* ADMIN */}
-
-                {user?.role === "admin" && (
-                  <>
-                    <Link
-                      to="/admin/users"
+                    <span
                       className="
-                        group
-                        relative
-                        px-4
-                        py-2.5
-                        rounded-xl
-                        text-[15px]
-                        font-semibold
-                        tracking-[-0.01em]
-                        text-gray-600
-                        transition-all
-                        duration-300
-                        hover:-translate-y-[1px]
-                        hover:text-red-600
-                        hover:bg-gradient-to-r
-                        hover:from-red-50
-                        hover:to-orange-50
-                        hover:shadow-[0_5px_20px_rgba(239,68,68,0.10)]
+                        text-xs
+                        font-bold
+                        text-emerald-800
                       "
                     >
-                      Users
-                      <span
-                        className="
-                          absolute
-                          bottom-[5px]
-                          left-4
-                          right-4
-                          h-[2px]
-                          rounded-full
-                          bg-gradient-to-r
-                          from-red-400
-                          to-orange-400
-                          scale-x-0
-                          origin-left
-                          transition-transform
-                          duration-300
-                          group-hover:scale-x-100
-                        "
-                      />
-                    </Link>
+                      {myRewards?.coins || 0}
+                    </span>
 
-                    <Link
-                      to="/admin/donations"
+                    <span
                       className="
-                        group
-                        relative
-                        px-4
-                        py-2.5
-                        rounded-xl
-                        text-[15px]
-                        font-semibold
-                        tracking-[-0.01em]
-                        text-gray-600
-                        transition-all
-                        duration-300
-                        hover:-translate-y-[1px]
-                        hover:text-red-600
-                        hover:bg-gradient-to-r
-                        hover:from-red-50
-                        hover:to-orange-50
-                        hover:shadow-[0_5px_20px_rgba(239,68,68,0.10)]
+                        px-1.5
+                        py-0.5
+                        rounded-md
+                        bg-emerald-600
+                        text-white
+                        text-[9px]
+                        font-black
+                        uppercase
+                        tracking-wide
                       "
                     >
-                      Donations
-                      <span
-                        className="
-                          absolute
-                          bottom-[5px]
-                          left-4
-                          right-4
-                          h-[2px]
-                          rounded-full
-                          bg-gradient-to-r
-                          from-red-400
-                          to-orange-400
-                          scale-x-0
-                          origin-left
-                          transition-transform
-                          duration-300
-                          group-hover:scale-x-100
-                        "
-                      />
-                    </Link>
-                  </>
+                      {myRewards?.badge || "Bronze"}
+                    </span>
+                  </div>
                 )}
 
-                {/* USER AREA & LIVE COIN COUNTER */}
+                {/* =================================================
+                    USER
+                ================================================= */}
 
                 <div
                   className="
                     flex
                     items-center
-                    gap-3
-                    ml-3
-                    pl-4
-                    border-l
-                    border-gray-200
+                    gap-2.5
                   "
                 >
-                  {/* LIVE COIN & BADGE BADGE (DONORS ONLY) */}
-                  {user?.role === "donor" && (
-                    <div className="hidden sm:flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl shadow-sm">
-                      <span className="text-sm">🪙</span>
-                      <span className="text-xs font-bold text-emerald-800">
-                        {myRewards?.coins || 0}
-                      </span>
-                      <span className="text-[10px] font-extrabold uppercase px-1.5 py-0.5 bg-emerald-600 text-white rounded-md tracking-wider">
-                        {myRewards?.badge || "Bronze"}
-                      </span>
-                    </div>
-                  )}
+                  {/* AVATAR */}
 
-                  {/* USER INFO */}
+                  <div
+                    className="
+                      w-9
+                      h-9
+                      rounded-full
+                      bg-emerald-100
+                      border
+                      border-emerald-200
+                      flex
+                      items-center
+                      justify-center
+                      text-emerald-700
+                      text-sm
+                      font-black
+                    "
+                  >
+                    {user?.name?.charAt(0)?.toUpperCase() || "U"}
+                  </div>
 
-                  <div className="hidden lg:block text-right">
-                    <p className="text-[14px] font-bold text-gray-900">
+                  {/* USER NAME */}
+
+                  <div className="leading-tight">
+                    <p
+                      className="
+                        text-[13px]
+                        font-bold
+                        text-slate-800
+                      "
+                    >
                       {user?.name || "User"}
                     </p>
 
-                    <p className="text-[10px] font-semibold text-gray-400 capitalize tracking-wide">
+                    <p
+                      className="
+                        text-[10px]
+                        font-medium
+                        text-slate-400
+                        capitalize
+                        mt-0.5
+                      "
+                    >
                       {user?.role}
                     </p>
                   </div>
-
-                  {/* LOGOUT */}
-
-                  <button
-                    type="button"
-                    onClick={handleLogout}
-                    className="
-                      group/logout
-                      relative
-                      isolate
-                      overflow-hidden
-                      px-5
-                      py-2.5
-                      rounded-xl
-                      border
-                      border-red-200
-                      bg-red-50
-                      text-red-600
-                      text-[14px]
-                      font-bold
-                      transition-all
-                      duration-300
-                      hover:-translate-y-0.5
-                      hover:bg-white
-                      hover:border-red-300
-                      hover:shadow-[0_7px_22px_rgba(239,68,68,0.12)]
-                    "
-                  >
-                    <span
-                      className="
-                        absolute
-                        inset-0
-                        -z-10
-                        translate-x-full
-                        bg-gradient-to-r
-                        from-white
-                        to-red-50
-                        transition-transform
-                        duration-400
-                        group-hover/logout:translate-x-0
-                      "
-                    />
-
-                    <span className="relative z-10">Logout</span>
-                  </button>
                 </div>
-              </>
+
+                {/* =================================================
+                    LOGOUT
+                ================================================= */}
+
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="
+                    flex
+                    items-center
+                    gap-2
+                    px-4
+                    py-2.5
+                    rounded-xl
+                    border
+                    border-red-200
+                    bg-red-50
+                    text-red-600
+                    text-[13px]
+                    font-bold
+                    transition-all
+                    duration-200
+                    hover:bg-red-100
+                    hover:border-red-300
+                  "
+                >
+                  <LogOut size={16} strokeWidth={2.2} />
+                  Logout
+                </button>
+              </div>
             )}
+
+            {/* =================================================
+                MOBILE MENU BUTTON
+            ================================================= */}
+
+            <button
+              type="button"
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="
+                lg:hidden
+                ml-3
+                w-10
+                h-10
+                rounded-xl
+                border
+                border-slate-200
+                bg-slate-50
+                flex
+                items-center
+                justify-center
+                text-slate-700
+                transition-all
+                duration-200
+                hover:bg-emerald-50
+                hover:text-emerald-700
+              "
+            >
+              {menuOpen ? <X size={21} /> : <Menu size={21} />}
+            </button>
           </div>
-
-          {/* =================================================
-              MOBILE MENU BUTTON
-          ================================================= */}
-
-          <button
-            type="button"
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="
-              md:hidden
-              w-11
-              h-11
-              rounded-xl
-              bg-gray-50
-              border
-              border-gray-200
-              flex
-              items-center
-              justify-center
-              text-[20px]
-              text-gray-700
-              transition-all
-              duration-300
-              hover:bg-emerald-50
-              hover:text-emerald-600
-              hover:border-emerald-200
-              hover:shadow-[0_5px_18px_rgba(16,185,129,0.12)]
-            "
-          >
-            {menuOpen ? "✕" : "☰"}
-          </button>
         </div>
 
         {/* =================================================
@@ -712,102 +844,159 @@ const Navbar = () => {
 
         <div
           className={`
-            md:hidden
-            overflow-hidden
+            lg:hidden
+            absolute
+            left-0
+            right-0
+            top-[76px]
+            bg-white
+            border-b
+            border-slate-200
+            shadow-[0_15px_35px_rgba(15,23,42,0.08)]
             transition-all
-            duration-500
-            ease-out
-            ${menuOpen ? "max-h-[700px] opacity-100 pb-5" : "max-h-0 opacity-0"}
+            duration-300
+            ${
+              menuOpen
+                ? "opacity-100 visible translate-y-0"
+                : "opacity-0 invisible -translate-y-2"
+            }
           `}
         >
-          <div className="border-t border-gray-100 pt-4 space-y-2">
-            {/* LEADERBOARD MOBILE */}
-            <Link
-              to="/leaderboard"
-              onClick={() => setMenuOpen(false)}
-              className={mobileLinkClass}
-            >
-              🏆 Leaderboard
-            </Link>
-
+          <div className="p-4 space-y-1">
             {!token ? (
               <>
+                {/* HOME */}
+
                 <Link
                   to="/"
                   onClick={() => setMenuOpen(false)}
                   className={mobileLinkClass}
                 >
-                  🏠 Home
+                  <House size={18} />
+                  Home
                 </Link>
+
+                {/* LEADERBOARD */}
+
+                <Link
+                  to="/leaderboard"
+                  onClick={() => setMenuOpen(false)}
+                  className={mobileLinkClass}
+                >
+                  <Trophy size={18} />
+                  Leaderboard
+                </Link>
+
+                {/* LOGIN */}
 
                 <Link
                   to="/login"
                   onClick={() => setMenuOpen(false)}
                   className={mobileLinkClass}
                 >
-                  🔐 Login
+                  <LogIn size={18} />
+                  Login
                 </Link>
+
+                {/* REGISTER */}
 
                 <Link
                   to="/register"
                   onClick={() => setMenuOpen(false)}
-                  className="
-                    block
-                    px-4
-                    py-3
-                    rounded-xl
-                    border
-                    border-emerald-600
-                    bg-gradient-to-r
-                    from-emerald-600
-                    to-green-600
-                    text-white
-                    text-[15px]
-                    font-bold
-                    transition-all
-                    duration-300
-                    hover:bg-white
-                    hover:text-emerald-700
-                    hover:border-emerald-500
-                    hover:shadow-[0_7px_22px_rgba(16,185,129,0.16)]
-                  "
+                  className={mobileLinkClass}
                 >
-                  🚀 Register
+                  <UserPlus size={18} />
+                  Register
                 </Link>
               </>
             ) : (
               <>
+                {/* =================================================
+                    LEADERBOARD
+                ================================================= */}
+
+                <Link
+                  to="/leaderboard"
+                  onClick={() => setMenuOpen(false)}
+                  className={mobileLinkClass}
+                >
+                  <Trophy size={18} />
+                  Leaderboard
+                </Link>
+
+                {/* =================================================
+                    DASHBOARD
+                ================================================= */}
+
                 <Link
                   to={getDashboardPath()}
                   onClick={() => setMenuOpen(false)}
                   className={mobileLinkClass}
                 >
-                  📊 Dashboard
+                  <LayoutDashboard size={18} />
+                  Dashboard
                 </Link>
 
-                {/* DONOR */}
+                {/* =================================================
+                    ANALYTICS
+                ================================================= */}
+
+                <Link
+                  to="/analytics"
+                  onClick={() => setMenuOpen(false)}
+                  className={mobileLinkClass}
+                >
+                  <BarChart3 size={18} />
+                  Analytics
+                </Link>
+
+                {/* =================================================
+                    DONOR
+                ================================================= */}
 
                 {user?.role === "donor" && (
-                  <>
+                  <div className="pt-2">
+                    <p
+                      className="
+                        px-4
+                        py-2
+                        text-[10px]
+                        font-black
+                        uppercase
+                        tracking-[0.15em]
+                        text-slate-400
+                      "
+                    >
+                      Donations
+                    </p>
+
+                    {/* CREATE DONATION */}
+
                     <Link
                       to="/donor/create-donation"
                       onClick={() => setMenuOpen(false)}
                       className={mobileLinkClass}
                     >
-                      🍱 Create Donation
+                      <Utensils size={18} />
+                      Create Donation
                     </Link>
+
+                    {/* MY DONATIONS */}
 
                     <Link
                       to="/donor/my-donations"
                       onClick={() => setMenuOpen(false)}
                       className={mobileLinkClass}
                     >
-                      📦 My Donations
+                      <Package size={18} />
+                      My Donations
                     </Link>
-                  </>
+                  </div>
                 )}
 
-                {/* NGO / VOLUNTEER */}
+                {/* =================================================
+                    NGO / VOLUNTEER
+                ================================================= */}
 
                 {(user?.role === "ngo" || user?.role === "volunteer") && (
                   <>
@@ -816,7 +1005,8 @@ const Navbar = () => {
                       onClick={() => setMenuOpen(false)}
                       className={mobileLinkClass}
                     >
-                      🔎 Available Donations
+                      <Search size={18} />
+                      Available Donations
                     </Link>
 
                     <Link
@@ -824,12 +1014,15 @@ const Navbar = () => {
                       onClick={() => setMenuOpen(false)}
                       className={mobileLinkClass}
                     >
-                      ❤️ My Claims
+                      <Heart size={18} />
+                      My Claims
                     </Link>
                   </>
                 )}
 
-                {/* ADMIN */}
+                {/* =================================================
+                    ADMIN
+                ================================================= */}
 
                 {user?.role === "admin" && (
                   <>
@@ -838,7 +1031,8 @@ const Navbar = () => {
                       onClick={() => setMenuOpen(false)}
                       className={mobileLinkClass}
                     >
-                      👥 Manage Users
+                      <Users size={18} />
+                      Manage Users
                     </Link>
 
                     <Link
@@ -846,60 +1040,116 @@ const Navbar = () => {
                       onClick={() => setMenuOpen(false)}
                       className={mobileLinkClass}
                     >
-                      📦 Manage Donations
+                      <Package size={18} />
+                      Manage Donations
                     </Link>
                   </>
                 )}
 
-                {/* USER INFO */}
+                {/* =================================================
+                    MOBILE USER
+                ================================================= */}
 
-                <div className="border-t border-gray-100 mt-3 pt-4 px-1">
-                  <div className="px-4 flex items-center justify-between">
+                <div
+                  className="
+                    mt-3
+                    pt-4
+                    border-t
+                    border-slate-100
+                    flex
+                    items-center
+                    justify-between
+                    px-4
+                  "
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="
+                        w-10
+                        h-10
+                        rounded-full
+                        bg-emerald-100
+                        border
+                        border-emerald-200
+                        flex
+                        items-center
+                        justify-center
+                        text-emerald-700
+                        font-black
+                      "
+                    >
+                      {user?.name?.charAt(0)?.toUpperCase() || "U"}
+                    </div>
+
                     <div>
-                      <p className="text-[15px] font-bold text-gray-900">
+                      <p className="text-sm font-bold text-slate-800">
                         {user?.name}
                       </p>
-                      <p className="text-[11px] font-semibold text-gray-500 capitalize tracking-wide">
+
+                      <p className="text-[11px] text-slate-400 capitalize">
                         {user?.role}
                       </p>
                     </div>
-
-                    {/* MOBILE COIN PILL (DONOR ONLY) */}
-                    {user?.role === "donor" && (
-                      <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg">
-                        <span>🪙</span>
-                        <span className="text-xs font-bold text-emerald-800">
-                          {myRewards?.coins || 0}
-                        </span>
-                      </div>
-                    )}
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={handleLogout}
-                    className="
-                      w-full
-                      mt-3
-                      px-4
-                      py-3
-                      rounded-xl
-                      bg-red-50
-                      text-red-900
-                      border
-                      border-red-100
-                      text-[15px]
-                      font-bold
-                      transition-all
-                      duration-300
-                      hover:bg-white
-                      hover:border-red-500
-                      hover:shadow-[0_7px_22px_rgba(239,68,68,0.12)]
-                    "
-                  >
-                    Logout
-                  </button>
+                  {/* MOBILE REWARD */}
+
+                  {user?.role === "donor" && (
+                    <div
+                      className="
+                        flex
+                        items-center
+                        gap-1.5
+                        px-2.5
+                        py-1.5
+                        rounded-lg
+                        bg-emerald-50
+                        border
+                        border-emerald-200
+                      "
+                    >
+                      <Coins size={14} className="text-emerald-600" />
+
+                      <span
+                        className="
+                          text-xs
+                          font-bold
+                          text-emerald-700
+                        "
+                      >
+                        {myRewards?.coins || 0}
+                      </span>
+                    </div>
+                  )}
                 </div>
+
+                {/* =================================================
+                    MOBILE LOGOUT
+                ================================================= */}
+
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="
+                    mt-3
+                    w-full
+                    flex
+                    items-center
+                    justify-center
+                    gap-2
+                    px-4
+                    py-3
+                    rounded-xl
+                    bg-red-50
+                    border
+                    border-red-100
+                    text-red-600
+                    font-bold
+                  "
+                >
+                  <LogOut size={18} />
+                  Logout
+                </button>
               </>
             )}
           </div>
