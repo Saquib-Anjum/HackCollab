@@ -1,0 +1,49 @@
+<svg width="240" height="240" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="handGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6FCB6F"/>
+      <stop offset="100%" stop-color="#2E8B4F"/>
+    </linearGradient>
+    <linearGradient id="sproutGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD97D"/>
+      <stop offset="100%" stop-color="#FFB84D"/>
+    </linearGradient>
+  </defs>
+
+  <circle cx="120" cy="120" r="120" fill="#EAF8EC"/>
+
+  <g transform="translate(20,15)">
+    <!-- Left hand -->
+    <path d="M 100 160
+             C 58 160 32 128 32 94
+             C 32 70 51 54 72 56
+             C 85 57 96 66 100 83
+             C 100 83 100 83 100 83
+             Z"
+          fill="url(#handGrad3)"/>
+
+    <!-- Right hand (mirrored) -->
+    <path d="M 100 160
+             C 142 160 168 128 168 94
+             C 168 70 149 54 128 56
+             C 115 57 104 66 100 83
+             C 100 83 100 83 100 83
+             Z"
+          fill="url(#handGrad3)"/>
+
+    <!-- Fingers - left -->
+    <path d="M 42 98 Q 36 83 44 70" stroke="#EAF8EC" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+    <path d="M 58 83 Q 53 66 61 53" stroke="#EAF8EC" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+
+    <!-- Fingers - right -->
+    <path d="M 158 98 Q 164 83 156 70" stroke="#EAF8EC" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+    <path d="M 142 83 Q 147 66 139 53" stroke="#EAF8EC" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+
+    <!-- Sprout resting in the hands -->
+    <g transform="translate(100,92)">
+      <line x1="0" y1="0" x2="0" y2="24" stroke="#3E9A4A" stroke-width="4.5" stroke-linecap="round"/>
+      <path d="M 0 6 C -15 -3 -22 -18 -13 -28 C 1 -24 7 -8 0 6 Z" fill="url(#sproutGrad3)"/>
+      <path d="M 0 -2 C 13 -9 20 -22 13 -32 C 0 -30 -6 -15 0 -2 Z" fill="#6FCB6F"/>
+    </g>
+  </g>
+</svg>
