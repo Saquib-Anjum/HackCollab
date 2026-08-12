@@ -1,11 +1,13 @@
 const User = require("../models/User");
 const Donation = require("../models/Donation");
+const Reward = require("../models/Reward");
+const { calculateCoins, determineBadge } = require("../utils/rewardCalculator");
 
 // =====================================================
 // SOCKET HELPER
 // =====================================================
 
-const emitDonationEvent = (req, event, donation) => {
+const emitDonationEvent = (req, event, payload) => {
   const io = req.app.get("io");
 
   if (!io) {
@@ -13,7 +15,7 @@ const emitDonationEvent = (req, event, donation) => {
     return;
   }
 
-  io.emit(event, donation);
+  io.emit(event, payload);
 };
 
 // =====================================================
@@ -99,19 +101,15 @@ const createDonation = async (req, res) => {
 
     const donation = await Donation.create({
       donor: req.user.id,
-
       foodType,
       category,
       quantity,
       unit,
-
       pickupLocation,
       latitude: Number(latitude),
       longitude: Number(longitude),
-
       pickupTime,
       expiryTime,
-
       description,
     });
 
@@ -119,20 +117,15 @@ const createDonation = async (req, res) => {
     // POPULATE DONOR
     // =========================
 
-    const populatedDonation =
-      await Donation.findById(donation._id)
-        .populate("donor", "name email")
-        .populate("claimedBy", "name email role");
+    const populatedDonation = await Donation.findById(donation._id)
+      .populate("donor", "name email")
+      .populate("claimedBy", "name email role");
 
     // =========================
     // SOCKET EVENT
     // =========================
 
-    emitDonationEvent(
-      req,
-      "donation:created",
-      populatedDonation
-    );
+    emitDonationEvent(req, "donation:created", populatedDonation);
 
     // =========================
     // RESPONSE
@@ -144,10 +137,7 @@ const createDonation = async (req, res) => {
       donation: populatedDonation,
     });
   } catch (error) {
-    console.error(
-      "Create Donation Error:",
-      error
-    );
+    console.error("Create Donation Error:", error);
 
     return res.status(500).json({
       success: false,
@@ -178,10 +168,7 @@ const getAvailableDonations = async (req, res) => {
       donations,
     });
   } catch (error) {
-    console.error(
-      "Get Donations Error:",
-      error
-    );
+    console.error("Get Donations Error:", error);
 
     return res.status(500).json({
       success: false,
@@ -209,10 +196,7 @@ const getMyDonations = async (req, res) => {
       donations,
     });
   } catch (error) {
-    console.error(
-      "Get My Donations Error:",
-      error
-    );
+    console.error("Get My Donations Error:", error);
 
     return res.status(500).json({
       success: false,
@@ -233,9 +217,7 @@ const claimDonation = async (req, res) => {
     // FIND USER
     // =========================
 
-    const user = await User.findById(
-      req.user.id
-    );
+    const user = await User.findById(req.user.id);
 
     if (!user) {
       return res.status(404).json({
@@ -259,28 +241,21 @@ const claimDonation = async (req, res) => {
     // ROLE CHECK
     // =========================
 
-    if (
-      user.role !== "ngo" &&
-      user.role !== "volunteer"
-    ) {
+    if (user.role !== "ngo" && user.role !== "volunteer") {
       return res.status(403).json({
         success: false,
-        message:
-          "Only NGO or volunteer can claim donations",
+        message: "Only NGO or volunteer can claim donations",
       });
     }
 
     // =========================
     // EMAIL VERIFICATION
     // =========================
-    // Registration itself verifies email
-    // because OTP/Resend was removed.
 
     if (user.isEmailVerified !== true) {
       return res.status(403).json({
         success: false,
-        message:
-          "Your account email is not verified",
+        message: "Your account email is not verified",
       });
     }
 
@@ -288,14 +263,10 @@ const claimDonation = async (req, res) => {
     // ADMIN VERIFICATION
     // =========================
 
-    if (
-      user.verificationStatus !==
-      "VERIFIED"
-    ) {
+    if (user.verificationStatus !== "VERIFIED") {
       return res.status(403).json({
         success: false,
-        message:
-          "Your account is not verified by admin",
+        message: "Your account is not verified by admin",
       });
     }
 
@@ -303,8 +274,7 @@ const claimDonation = async (req, res) => {
     // FIND DONATION
     // =========================
 
-    const donation =
-      await Donation.findById(id);
+    const donation = await Donation.findById(id);
 
     if (!donation) {
       return res.status(404).json({
@@ -320,8 +290,7 @@ const claimDonation = async (req, res) => {
     if (donation.status !== "AVAILABLE") {
       return res.status(400).json({
         success: false,
-        message:
-          "Donation is no longer available",
+        message: "Donation is no longer available",
       });
     }
 
@@ -329,10 +298,7 @@ const claimDonation = async (req, res) => {
     // EXPIRY CHECK
     // =========================
 
-    if (
-      new Date(donation.expiryTime) <=
-      new Date()
-    ) {
+    if (new Date(donation.expiryTime) <= new Date()) {
       return res.status(400).json({
         success: false,
         message: "Donation has expired",
@@ -353,28 +319,15 @@ const claimDonation = async (req, res) => {
     // POPULATE
     // =========================
 
-    const populatedDonation =
-      await Donation.findById(
-        donation._id
-      )
-        .populate(
-          "donor",
-          "name email"
-        )
-        .populate(
-          "claimedBy",
-          "name email role"
-        );
+    const populatedDonation = await Donation.findById(donation._id)
+      .populate("donor", "name email")
+      .populate("claimedBy", "name email role");
 
     // =========================
     // SOCKET EVENT
     // =========================
 
-    emitDonationEvent(
-      req,
-      "donation:claimed",
-      populatedDonation
-    );
+    emitDonationEvent(req, "donation:claimed", populatedDonation);
 
     // =========================
     // RESPONSE
@@ -382,15 +335,11 @@ const claimDonation = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message:
-        "Donation claimed successfully",
+      message: "Donation claimed successfully",
       donation: populatedDonation,
     });
   } catch (error) {
-    console.error(
-      "Claim Donation Error:",
-      error
-    );
+    console.error("Claim Donation Error:", error);
 
     return res.status(500).json({
       success: false,
@@ -403,18 +352,11 @@ const claimDonation = async (req, res) => {
 // SET DELIVERY LOCATION
 // =====================================================
 
-const setDeliveryLocation = async (
-  req,
-  res
-) => {
+const setDeliveryLocation = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const {
-      deliveryLocation,
-      deliveryLatitude,
-      deliveryLongitude,
-    } = req.body;
+    const { deliveryLocation, deliveryLatitude, deliveryLongitude } = req.body;
 
     // =========================
     // REQUIRED FIELDS
@@ -427,8 +369,7 @@ const setDeliveryLocation = async (
     ) {
       return res.status(400).json({
         success: false,
-        message:
-          "Delivery location and coordinates are required",
+        message: "Delivery location and coordinates are required",
       });
     }
 
@@ -436,13 +377,8 @@ const setDeliveryLocation = async (
     // COORDINATE VALIDATION
     // =========================
 
-    const lat = Number(
-      deliveryLatitude
-    );
-
-    const lng = Number(
-      deliveryLongitude
-    );
+    const lat = Number(deliveryLatitude);
+    const lng = Number(deliveryLongitude);
 
     if (
       Number.isNaN(lat) ||
@@ -454,8 +390,7 @@ const setDeliveryLocation = async (
     ) {
       return res.status(400).json({
         success: false,
-        message:
-          "Invalid delivery coordinates",
+        message: "Invalid delivery coordinates",
       });
     }
 
@@ -463,8 +398,7 @@ const setDeliveryLocation = async (
     // FIND DONATION
     // =========================
 
-    const donation =
-      await Donation.findById(id);
+    const donation = await Donation.findById(id);
 
     if (!donation) {
       return res.status(404).json({
@@ -477,15 +411,10 @@ const setDeliveryLocation = async (
     // CLAIMANT CHECK
     // =========================
 
-    if (
-      !donation.claimedBy ||
-      donation.claimedBy.toString() !==
-        req.user.id
-    ) {
+    if (!donation.claimedBy || donation.claimedBy.toString() !== req.user.id) {
       return res.status(403).json({
         success: false,
-        message:
-          "You are not the claimant of this donation",
+        message: "You are not the claimant of this donation",
       });
     }
 
@@ -505,9 +434,7 @@ const setDeliveryLocation = async (
     // SAVE DELIVERY LOCATION
     // =========================
 
-    donation.deliveryLocation =
-      deliveryLocation.trim();
-
+    donation.deliveryLocation = deliveryLocation.trim();
     donation.deliveryLatitude = lat;
     donation.deliveryLongitude = lng;
 
@@ -517,18 +444,9 @@ const setDeliveryLocation = async (
     // POPULATE
     // =========================
 
-    const populatedDonation =
-      await Donation.findById(
-        donation._id
-      )
-        .populate(
-          "donor",
-          "name email"
-        )
-        .populate(
-          "claimedBy",
-          "name email role"
-        );
+    const populatedDonation = await Donation.findById(donation._id)
+      .populate("donor", "name email")
+      .populate("claimedBy", "name email role");
 
     // =========================
     // SOCKET EVENT
@@ -537,7 +455,7 @@ const setDeliveryLocation = async (
     emitDonationEvent(
       req,
       "donation:delivery-location-updated",
-      populatedDonation
+      populatedDonation,
     );
 
     // =========================
@@ -546,15 +464,11 @@ const setDeliveryLocation = async (
 
     return res.status(200).json({
       success: true,
-      message:
-        "Delivery location updated successfully",
+      message: "Delivery location updated successfully",
       donation: populatedDonation,
     });
   } catch (error) {
-    console.error(
-      "Set Delivery Location Error:",
-      error
-    );
+    console.error("Set Delivery Location Error:", error);
 
     return res.status(500).json({
       success: false,
@@ -567,10 +481,7 @@ const setDeliveryLocation = async (
 // PICKUP DONATION
 // =====================================================
 
-const pickupDonation = async (
-  req,
-  res
-) => {
+const pickupDonation = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -578,8 +489,7 @@ const pickupDonation = async (
     // FIND DONATION
     // =========================
 
-    const donation =
-      await Donation.findById(id);
+    const donation = await Donation.findById(id);
 
     if (!donation) {
       return res.status(404).json({
@@ -595,8 +505,7 @@ const pickupDonation = async (
     if (donation.status !== "CLAIMED") {
       return res.status(400).json({
         success: false,
-        message:
-          "Donation must be claimed first",
+        message: "Donation must be claimed first",
       });
     }
 
@@ -611,8 +520,7 @@ const pickupDonation = async (
     ) {
       return res.status(400).json({
         success: false,
-        message:
-          "Please set the delivery location before pickup",
+        message: "Please set the delivery location before pickup",
       });
     }
 
@@ -620,15 +528,10 @@ const pickupDonation = async (
     // CLAIMANT CHECK
     // =========================
 
-    if (
-      !donation.claimedBy ||
-      donation.claimedBy.toString() !==
-        req.user.id
-    ) {
+    if (!donation.claimedBy || donation.claimedBy.toString() !== req.user.id) {
       return res.status(403).json({
         success: false,
-        message:
-          "You are not the claimant of this donation",
+        message: "You are not the claimant of this donation",
       });
     }
 
@@ -645,28 +548,69 @@ const pickupDonation = async (
     // POPULATE
     // =========================
 
-    const populatedDonation =
-      await Donation.findById(
-        donation._id
-      )
-        .populate(
-          "donor",
-          "name email"
-        )
-        .populate(
-          "claimedBy",
-          "name email role"
-        );
+    const populatedDonation = await Donation.findById(donation._id)
+      .populate("donor", "name email")
+      .populate("claimedBy", "name email role");
 
+    // =========================
+    // GAMIFICATION / REWARDS
+    // =========================
+
+    // =========================
+    // GAMIFICATION / REWARDS
+    // =========================
+
+    let coinsEarned = 0;
+    let hitStreak = false;
+    let newBadge = "Bronze";
+    let totalCoins = 0;
+    let totalDonations = 0;
+
+    // Use findOneAndUpdate with upsert: true.
+    // This safely updates existing reward profiles OR creates one automatically if it's missing!
+    // Replace your old Reward.findOne block with this:
+    const userReward = await Reward.findOneAndUpdate(
+      { user: populatedDonation.donor._id },
+      { $setOnInsert: { coins: 0, badge: "Bronze", totalDonations: 0 } },
+      { new: true, upsert: true },
+    );
+
+    if (userReward) {
+      // Safely increment total donations (handles case if it was previously undefined)
+      userReward.totalDonations = (userReward.totalDonations || 0) + 1;
+
+      // Calculate coins
+      const rewardResult = calculateCoins(userReward.totalDonations);
+      coinsEarned = rewardResult.coinsEarned;
+      hitStreak = rewardResult.hitStreak;
+
+      // Update total coins and badge
+      userReward.coins += coinsEarned;
+      userReward.badge = determineBadge(userReward.coins);
+
+      await userReward.save();
+
+      newBadge = userReward.badge;
+      totalCoins = userReward.coins;
+      totalDonations = userReward.totalDonations;
+    }
     // =========================
     // SOCKET EVENT
     // =========================
 
-    emitDonationEvent(
-      req,
-      "donation:picked_up",
-      populatedDonation
-    );
+    const socketPayload = {
+      donation: populatedDonation,
+      rewardStats: {
+        coinsEarned,
+        hitStreak,
+        totalDonations,
+        totalCoins,
+        badge: newBadge,
+      },
+    };
+
+    // Emit the combined payload
+    emitDonationEvent(req, "donation:picked_up", socketPayload);
 
     // =========================
     // RESPONSE
@@ -674,15 +618,11 @@ const pickupDonation = async (
 
     return res.status(200).json({
       success: true,
-      message:
-        "Donation marked as picked up",
+      message: "Donation marked as picked up",
       donation: populatedDonation,
     });
   } catch (error) {
-    console.error(
-      "Pickup Donation Error:",
-      error
-    );
+    console.error("Pickup Donation Error:", error);
 
     return res.status(500).json({
       success: false,
@@ -695,10 +635,7 @@ const pickupDonation = async (
 // DELIVER DONATION
 // =====================================================
 
-const deliverDonation = async (
-  req,
-  res
-) => {
+const deliverDonation = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -706,8 +643,7 @@ const deliverDonation = async (
     // FIND DONATION
     // =========================
 
-    const donation =
-      await Donation.findById(id);
+    const donation = await Donation.findById(id);
 
     if (!donation) {
       return res.status(404).json({
@@ -723,8 +659,7 @@ const deliverDonation = async (
     if (donation.status !== "PICKED_UP") {
       return res.status(400).json({
         success: false,
-        message:
-          "Donation must be picked up first",
+        message: "Donation must be picked up first",
       });
     }
 
@@ -732,15 +667,10 @@ const deliverDonation = async (
     // CLAIMANT CHECK
     // =========================
 
-    if (
-      !donation.claimedBy ||
-      donation.claimedBy.toString() !==
-        req.user.id
-    ) {
+    if (!donation.claimedBy || donation.claimedBy.toString() !== req.user.id) {
       return res.status(403).json({
         success: false,
-        message:
-          "You are not authorized to deliver this donation",
+        message: "You are not authorized to deliver this donation",
       });
     }
 
@@ -755,8 +685,7 @@ const deliverDonation = async (
     ) {
       return res.status(400).json({
         success: false,
-        message:
-          "Delivery location is not set",
+        message: "Delivery location is not set",
       });
     }
 
@@ -773,28 +702,15 @@ const deliverDonation = async (
     // POPULATE
     // =========================
 
-    const populatedDonation =
-      await Donation.findById(
-        donation._id
-      )
-        .populate(
-          "donor",
-          "name email"
-        )
-        .populate(
-          "claimedBy",
-          "name email role"
-        );
+    const populatedDonation = await Donation.findById(donation._id)
+      .populate("donor", "name email")
+      .populate("claimedBy", "name email role");
 
     // =========================
     // SOCKET EVENT
     // =========================
 
-    emitDonationEvent(
-      req,
-      "donation:delivered",
-      populatedDonation
-    );
+    emitDonationEvent(req, "donation:delivered", populatedDonation);
 
     // =========================
     // RESPONSE
@@ -802,15 +718,11 @@ const deliverDonation = async (
 
     return res.status(200).json({
       success: true,
-      message:
-        "Donation delivered successfully",
+      message: "Donation delivered successfully",
       donation: populatedDonation,
     });
   } catch (error) {
-    console.error(
-      "Deliver Donation Error:",
-      error
-    );
+    console.error("Deliver Donation Error:", error);
 
     return res.status(500).json({
       success: false,
@@ -823,26 +735,16 @@ const deliverDonation = async (
 // GET MY CLAIMS
 // =====================================================
 
-const getMyClaims = async (
-  req,
-  res
-) => {
+const getMyClaims = async (req, res) => {
   try {
-    const donations =
-      await Donation.find({
-        claimedBy: req.user.id,
-      })
-        .populate(
-          "donor",
-          "name email"
-        )
-        .populate(
-          "claimedBy",
-          "name email role"
-        )
-        .sort({
-          createdAt: -1,
-        });
+    const donations = await Donation.find({
+      claimedBy: req.user.id,
+    })
+      .populate("donor", "name email")
+      .populate("claimedBy", "name email role")
+      .sort({
+        createdAt: -1,
+      });
 
     return res.status(200).json({
       success: true,
@@ -850,15 +752,11 @@ const getMyClaims = async (
       donations,
     });
   } catch (error) {
-    console.error(
-      "Get my claims error:",
-      error.message
-    );
+    console.error("Get my claims error:", error.message);
 
     return res.status(500).json({
       success: false,
-      message:
-        "Failed to fetch claimed donations",
+      message: "Failed to fetch claimed donations",
     });
   }
 };

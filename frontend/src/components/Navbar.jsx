@@ -1,18 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import { logout } from "../redux/slices/authSlice";
+import { fetchMyRewards } from "../redux/slices/rewardSlice";
 
 const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { token, user } = useSelector(
-    (state) => state.auth
-  );
+  const { token, user } = useSelector((state) => state.auth);
+
+  // Pull real-time reward stats from Redux
+  const { myRewards } = useSelector((state) => state.rewards);
 
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // Fetch rewards on mount if user is a logged-in donor
+  useEffect(() => {
+    if (token && user?.role === "donor") {
+      dispatch(fetchMyRewards());
+    }
+  }, [dispatch, token, user]);
 
   // =====================================================
   // LOGOUT
@@ -33,10 +42,7 @@ const Navbar = () => {
       return "/admin/dashboard";
     }
 
-    if (
-      user?.role === "ngo" ||
-      user?.role === "volunteer"
-    ) {
+    if (user?.role === "ngo" || user?.role === "volunteer") {
       return "/ngo/dashboard";
     }
 
@@ -108,24 +114,17 @@ const Navbar = () => {
         shadow-[0_4px_20px_rgba(0,0,0,0.04)]
       "
     >
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
         {/* =================================================
             NAVBAR
         ================================================= */}
 
         <div className="h-[74px] flex items-center justify-between">
-
           {/* =================================================
               LOGO
           ================================================= */}
 
-          <Link
-            to="/"
-            className="group flex items-center gap-3"
-          >
-
+          <Link to="/" className="group flex items-center gap-3">
             {/* LOGO ICON */}
 
             <div
@@ -151,10 +150,7 @@ const Navbar = () => {
                 group-hover:shadow-[0_10px_28px_rgba(16,185,129,0.35)]
               "
             >
-
-              <span className="relative z-10 text-[23px]">
-                🌱
-              </span>
+              <span className="relative z-10 text-[23px]">🌱</span>
 
               {/* GLOW */}
 
@@ -171,13 +167,11 @@ const Navbar = () => {
                   group-hover:opacity-30
                 "
               />
-
             </div>
 
             {/* LOGO TEXT */}
 
             <div className="leading-none">
-
               <h1
                 className="
                   text-[25px]
@@ -220,9 +214,7 @@ const Navbar = () => {
               >
                 Smart Food Donation
               </p>
-
             </div>
-
           </Link>
 
           {/* =================================================
@@ -230,18 +222,35 @@ const Navbar = () => {
           ================================================= */}
 
           <div className="hidden md:flex items-center gap-1">
+            {/* LEADERBOARD (Available to everyone) */}
+            <Link to="/leaderboard" className={navLinkClass}>
+              🏆 Leaderboard
+              <span
+                className="
+                  absolute
+                  bottom-[5px]
+                  left-4
+                  right-4
+                  h-[2px]
+                  rounded-full
+                  bg-gradient-to-r
+                  from-emerald-400
+                  to-green-500
+                  origin-left
+                  scale-x-0
+                  transition-transform
+                  duration-300
+                  group-hover:scale-x-100
+                "
+              />
+            </Link>
 
             {!token ? (
               <>
-
                 {/* HOME */}
 
-                <Link
-                  to="/"
-                  className={navLinkClass}
-                >
+                <Link to="/" className={navLinkClass}>
                   Home
-
                   <span
                     className="
                       absolute
@@ -264,12 +273,8 @@ const Navbar = () => {
 
                 {/* LOGIN */}
 
-                <Link
-                  to="/login"
-                  className={navLinkClass}
-                >
+                <Link to="/login" className={navLinkClass}>
                   Login
-
                   <span
                     className="
                       absolute
@@ -320,7 +325,6 @@ const Navbar = () => {
                     hover:shadow-[0_10px_30px_rgba(16,185,129,0.22)]
                   "
                 >
-
                   {/* WHITE / EMERALD HOVER */}
 
                   <span
@@ -359,24 +363,15 @@ const Navbar = () => {
                     "
                   />
 
-                  <span className="relative z-10">
-                    Register
-                  </span>
-
+                  <span className="relative z-10">Register</span>
                 </Link>
-
               </>
             ) : (
               <>
-
                 {/* DASHBOARD */}
 
-                <Link
-                  to={getDashboardPath()}
-                  className={navLinkClass}
-                >
+                <Link to={getDashboardPath()} className={navLinkClass}>
                   Dashboard
-
                   <span
                     className="
                       absolute
@@ -401,12 +396,8 @@ const Navbar = () => {
 
                 {user?.role === "donor" && (
                   <>
-                    <Link
-                      to="/donor/create-donation"
-                      className={navLinkClass}
-                    >
+                    <Link to="/donor/create-donation" className={navLinkClass}>
                       Create Donation
-
                       <span
                         className="
                           absolute
@@ -427,12 +418,8 @@ const Navbar = () => {
                       />
                     </Link>
 
-                    <Link
-                      to="/donor/my-donations"
-                      className={navLinkClass}
-                    >
+                    <Link to="/donor/my-donations" className={navLinkClass}>
                       My Donations
-
                       <span
                         className="
                           absolute
@@ -457,15 +444,13 @@ const Navbar = () => {
 
                 {/* NGO / VOLUNTEER */}
 
-                {(user?.role === "ngo" ||
-                  user?.role === "volunteer") && (
+                {(user?.role === "ngo" || user?.role === "volunteer") && (
                   <>
                     <Link
                       to="/ngo/available-donations"
                       className={navLinkClass}
                     >
                       Available Donations
-
                       <span
                         className="
                           absolute
@@ -486,12 +471,8 @@ const Navbar = () => {
                       />
                     </Link>
 
-                    <Link
-                      to="/ngo/my-claims"
-                      className={navLinkClass}
-                    >
+                    <Link to="/ngo/my-claims" className={navLinkClass}>
                       My Claims
-
                       <span
                         className="
                           absolute
@@ -541,7 +522,6 @@ const Navbar = () => {
                       "
                     >
                       Users
-
                       <span
                         className="
                           absolute
@@ -585,7 +565,6 @@ const Navbar = () => {
                       "
                     >
                       Donations
-
                       <span
                         className="
                           absolute
@@ -608,7 +587,7 @@ const Navbar = () => {
                   </>
                 )}
 
-                {/* USER AREA */}
+                {/* USER AREA & LIVE COIN COUNTER */}
 
                 <div
                   className="
@@ -621,11 +600,22 @@ const Navbar = () => {
                     border-gray-200
                   "
                 >
+                  {/* LIVE COIN & BADGE BADGE (DONORS ONLY) */}
+                  {user?.role === "donor" && (
+                    <div className="hidden sm:flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl shadow-sm">
+                      <span className="text-sm">🪙</span>
+                      <span className="text-xs font-bold text-emerald-800">
+                        {myRewards?.coins || 0}
+                      </span>
+                      <span className="text-[10px] font-extrabold uppercase px-1.5 py-0.5 bg-emerald-600 text-white rounded-md tracking-wider">
+                        {myRewards?.badge || "Bronze"}
+                      </span>
+                    </div>
+                  )}
 
                   {/* USER INFO */}
 
                   <div className="hidden lg:block text-right">
-
                     <p className="text-[14px] font-bold text-gray-900">
                       {user?.name || "User"}
                     </p>
@@ -633,7 +623,6 @@ const Navbar = () => {
                     <p className="text-[10px] font-semibold text-gray-400 capitalize tracking-wide">
                       {user?.role}
                     </p>
-
                   </div>
 
                   {/* LOGOUT */}
@@ -663,7 +652,6 @@ const Navbar = () => {
                       hover:shadow-[0_7px_22px_rgba(239,68,68,0.12)]
                     "
                   >
-
                     <span
                       className="
                         absolute
@@ -679,17 +667,11 @@ const Navbar = () => {
                       "
                     />
 
-                    <span className="relative z-10">
-                      Logout
-                    </span>
-
+                    <span className="relative z-10">Logout</span>
                   </button>
-
                 </div>
-
               </>
             )}
-
           </div>
 
           {/* =================================================
@@ -698,9 +680,7 @@ const Navbar = () => {
 
           <button
             type="button"
-            onClick={() =>
-              setMenuOpen(!menuOpen)
-            }
+            onClick={() => setMenuOpen(!menuOpen)}
             className="
               md:hidden
               w-11
@@ -724,7 +704,6 @@ const Navbar = () => {
           >
             {menuOpen ? "✕" : "☰"}
           </button>
-
         </div>
 
         {/* =================================================
@@ -738,24 +717,24 @@ const Navbar = () => {
             transition-all
             duration-500
             ease-out
-            ${
-              menuOpen
-                ? "max-h-[700px] opacity-100 pb-5"
-                : "max-h-0 opacity-0"
-            }
+            ${menuOpen ? "max-h-[700px] opacity-100 pb-5" : "max-h-0 opacity-0"}
           `}
         >
-
           <div className="border-t border-gray-100 pt-4 space-y-2">
+            {/* LEADERBOARD MOBILE */}
+            <Link
+              to="/leaderboard"
+              onClick={() => setMenuOpen(false)}
+              className={mobileLinkClass}
+            >
+              🏆 Leaderboard
+            </Link>
 
             {!token ? (
               <>
-
                 <Link
                   to="/"
-                  onClick={() =>
-                    setMenuOpen(false)
-                  }
+                  onClick={() => setMenuOpen(false)}
                   className={mobileLinkClass}
                 >
                   🏠 Home
@@ -763,9 +742,7 @@ const Navbar = () => {
 
                 <Link
                   to="/login"
-                  onClick={() =>
-                    setMenuOpen(false)
-                  }
+                  onClick={() => setMenuOpen(false)}
                   className={mobileLinkClass}
                 >
                   🔐 Login
@@ -773,9 +750,7 @@ const Navbar = () => {
 
                 <Link
                   to="/register"
-                  onClick={() =>
-                    setMenuOpen(false)
-                  }
+                  onClick={() => setMenuOpen(false)}
                   className="
                     block
                     px-4
@@ -799,16 +774,12 @@ const Navbar = () => {
                 >
                   🚀 Register
                 </Link>
-
               </>
             ) : (
               <>
-
                 <Link
                   to={getDashboardPath()}
-                  onClick={() =>
-                    setMenuOpen(false)
-                  }
+                  onClick={() => setMenuOpen(false)}
                   className={mobileLinkClass}
                 >
                   📊 Dashboard
@@ -820,9 +791,7 @@ const Navbar = () => {
                   <>
                     <Link
                       to="/donor/create-donation"
-                      onClick={() =>
-                        setMenuOpen(false)
-                      }
+                      onClick={() => setMenuOpen(false)}
                       className={mobileLinkClass}
                     >
                       🍱 Create Donation
@@ -830,9 +799,7 @@ const Navbar = () => {
 
                     <Link
                       to="/donor/my-donations"
-                      onClick={() =>
-                        setMenuOpen(false)
-                      }
+                      onClick={() => setMenuOpen(false)}
                       className={mobileLinkClass}
                     >
                       📦 My Donations
@@ -842,14 +809,11 @@ const Navbar = () => {
 
                 {/* NGO / VOLUNTEER */}
 
-                {(user?.role === "ngo" ||
-                  user?.role === "volunteer") && (
+                {(user?.role === "ngo" || user?.role === "volunteer") && (
                   <>
                     <Link
                       to="/ngo/available-donations"
-                      onClick={() =>
-                        setMenuOpen(false)
-                      }
+                      onClick={() => setMenuOpen(false)}
                       className={mobileLinkClass}
                     >
                       🔎 Available Donations
@@ -857,9 +821,7 @@ const Navbar = () => {
 
                     <Link
                       to="/ngo/my-claims"
-                      onClick={() =>
-                        setMenuOpen(false)
-                      }
+                      onClick={() => setMenuOpen(false)}
                       className={mobileLinkClass}
                     >
                       ❤️ My Claims
@@ -873,9 +835,7 @@ const Navbar = () => {
                   <>
                     <Link
                       to="/admin/users"
-                      onClick={() =>
-                        setMenuOpen(false)
-                      }
+                      onClick={() => setMenuOpen(false)}
                       className={mobileLinkClass}
                     >
                       👥 Manage Users
@@ -883,9 +843,7 @@ const Navbar = () => {
 
                     <Link
                       to="/admin/donations"
-                      onClick={() =>
-                        setMenuOpen(false)
-                      }
+                      onClick={() => setMenuOpen(false)}
                       className={mobileLinkClass}
                     >
                       📦 Manage Donations
@@ -896,17 +854,25 @@ const Navbar = () => {
                 {/* USER INFO */}
 
                 <div className="border-t border-gray-100 mt-3 pt-4 px-1">
+                  <div className="px-4 flex items-center justify-between">
+                    <div>
+                      <p className="text-[15px] font-bold text-gray-900">
+                        {user?.name}
+                      </p>
+                      <p className="text-[11px] font-semibold text-gray-500 capitalize tracking-wide">
+                        {user?.role}
+                      </p>
+                    </div>
 
-                  <div className="px-4">
-
-                    <p className="text-[15px] font-bold text-gray-900">
-                      {user?.name}
-                    </p>
-
-                    <p className="text-[11px] font-semibold text-gray-500 capitalize tracking-wide">
-                      {user?.role}
-                    </p>
-
+                    {/* MOBILE COIN PILL (DONOR ONLY) */}
+                    {user?.role === "donor" && (
+                      <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg">
+                        <span>🪙</span>
+                        <span className="text-xs font-bold text-emerald-800">
+                          {myRewards?.coins || 0}
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   <button
@@ -933,18 +899,12 @@ const Navbar = () => {
                   >
                     Logout
                   </button>
-
                 </div>
-
               </>
             )}
-
           </div>
-
         </div>
-
       </div>
-
     </nav>
   );
 };

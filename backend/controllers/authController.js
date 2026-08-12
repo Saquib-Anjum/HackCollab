@@ -1,7 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
+const Reward = require("../models/Reward");
 // =====================================================
 // REGISTER USER
 // =====================================================
@@ -112,6 +112,12 @@ const registerUser = async (req, res) => {
 
       verificationStatus,
     });
+    // =================================================
+    // 2. INITIALIZE REWARD PROFILE (DONORS ONLY)
+    // =================================================
+    if (userRole === "donor") {
+      await Reward.create({ user: user._id });
+    }
 
     // =================================================
     // REAL-TIME ADMIN UPDATE

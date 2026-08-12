@@ -1,10 +1,9 @@
 import { Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import {
-  setupDonationSocket,
-} from "./redux/slices/donationSlice";
+import { setupDonationSocket } from "./redux/slices/donationSlice";
+import { fetchMyRewards } from "./redux/slices/rewardSlice";
 
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -16,6 +15,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Leaderboard from "./pages/Leaderboard"; // <-- IMPORT LEADERBOARD PAGE
 
 // =========================
 // DONOR
@@ -44,15 +44,24 @@ import ManageDonations from "./pages/admin/ManageDonations";
 function App() {
   const dispatch = useDispatch();
 
+  // Get the logged-in user from the auth slice to pass their ID into the socket listener
+  const { user } = useSelector((state) => state.auth);
+
   // =========================
-  // SOCKET.IO
+  // SOCKET.IO & REWARDS INIT
   // =========================
 
   useEffect(() => {
-    const cleanup = setupDonationSocket(dispatch);
+    // Pass the user's ID so the socket can filter reward notifications for the correct donor
+    const cleanup = setupDonationSocket(dispatch, user?._id);
+
+    // If a user is logged in, fetch their current coin/badge stats right away
+    if (user && user.role === "donor") {
+      dispatch(fetchMyRewards());
+    }
 
     return cleanup;
-  }, [dispatch]);
+  }, [dispatch, user]);
 
   return (
     <>
@@ -67,113 +76,56 @@ function App() {
       ========================= */}
 
       <Routes>
-
         {/* =========================
             PUBLIC ROUTES
         ========================= */}
 
-        <Route
-          path="/"
-          element={<Home />}
-        />
+        <Route path="/" element={<Home />} />
 
-        <Route
-          path="/login"
-          element={<Login />}
-        />
+        <Route path="/login" element={<Login />} />
 
-        <Route
-          path="/register"
-          element={<Register />}
-        />
+        <Route path="/register" element={<Register />} />
+
+        <Route path="/leaderboard" element={<Leaderboard />} />
 
         {/* =========================
             DONOR ROUTES
         ========================= */}
 
-        <Route
-          element={
-            <ProtectedRoute
-              allowedRoles={["donor"]}
-            />
-          }
-        >
+        <Route element={<ProtectedRoute allowedRoles={["donor"]} />}>
+          <Route path="/donor/dashboard" element={<DonorDashboard />} />
 
-          <Route
-            path="/donor/dashboard"
-            element={<DonorDashboard />}
-          />
+          <Route path="/donor/create-donation" element={<CreateDonation />} />
 
-          <Route
-            path="/donor/create-donation"
-            element={<CreateDonation />}
-          />
-
-          <Route
-            path="/donor/my-donations"
-            element={<MyDonations />}
-          />
-
+          <Route path="/donor/my-donations" element={<MyDonations />} />
         </Route>
 
         {/* =========================
             NGO / VOLUNTEER ROUTES
         ========================= */}
 
-        <Route
-          element={
-            <ProtectedRoute
-              allowedRoles={["ngo", "volunteer"]}
-            />
-          }
-        >
-
-          <Route
-            path="/ngo/dashboard"
-            element={<NgoDashboard />}
-          />
+        <Route element={<ProtectedRoute allowedRoles={["ngo", "volunteer"]} />}>
+          <Route path="/ngo/dashboard" element={<NgoDashboard />} />
 
           <Route
             path="/ngo/available-donations"
             element={<AvailableDonations />}
           />
 
-          <Route
-            path="/ngo/my-claims"
-            element={<MyClaims />}
-          />
-
+          <Route path="/ngo/my-claims" element={<MyClaims />} />
         </Route>
 
         {/* =========================
             ADMIN ROUTES
         ========================= */}
 
-        <Route
-          element={
-            <ProtectedRoute
-              allowedRoles={["admin"]}
-            />
-          }
-        >
+        <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
 
-          <Route
-            path="/admin/dashboard"
-            element={<AdminDashboard />}
-          />
+          <Route path="/admin/users" element={<AdminUsers />} />
 
-          <Route
-            path="/admin/users"
-            element={<AdminUsers />}
-          />
-
-          <Route
-            path="/admin/donations"
-            element={<ManageDonations />}
-          />
-
+          <Route path="/admin/donations" element={<ManageDonations />} />
         </Route>
-
       </Routes>
     </>
   );

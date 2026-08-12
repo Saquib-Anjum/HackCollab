@@ -1,13 +1,13 @@
+// backend/controllers/userController.js
 const User = require("../models/User");
+const Reward = require("../models/Reward");
 
 // =========================
 // GET MY PROFILE
 // =========================
 const getMyProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select(
-      "-password"
-    );
+    const user = await User.findById(req.user.id).select("-password");
 
     if (!user) {
       return res.status(404).json({
@@ -16,14 +16,24 @@ const getMyProfile = async (req, res) => {
       });
     }
 
-    res.status(200).json({
+    // Optionally fetch or auto-create reward stats if the user is a donor
+    let reward = null;
+    if (user.role === "donor") {
+      reward = await Reward.findOne({ user: user._id });
+      if (!reward) {
+        reward = await Reward.create({ user: user._id });
+      }
+    }
+
+    return res.status(200).json({
       success: true,
       user,
+      reward,
     });
   } catch (error) {
     console.error("Get Profile Error:", error);
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Server error",
     });
@@ -52,7 +62,7 @@ const updateMyProfile = async (req, res) => {
       {
         new: true,
         runValidators: true,
-      }
+      },
     ).select("-password");
 
     if (!user) {
@@ -62,7 +72,7 @@ const updateMyProfile = async (req, res) => {
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Profile updated successfully",
       user,
@@ -70,7 +80,7 @@ const updateMyProfile = async (req, res) => {
   } catch (error) {
     console.error("Update Profile Error:", error);
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Server error",
     });
