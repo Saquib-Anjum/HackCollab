@@ -9,7 +9,7 @@ const API_URL =
   import.meta.env.VITE_API_URL ||
   (import.meta.env.DEV
     ? "http://localhost:5000"
-    : "https://smart-food-waste-backend.onrender.com");
+    : "https://hack-collab-nu.vercel.app");
 
 // =====================================================
 // GET TOKEN

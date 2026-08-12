@@ -4,7 +4,7 @@ const SOCKET_URL =
   import.meta.env.VITE_SOCKET_URL ||
   (import.meta.env.DEV
     ? "http://localhost:5000"
-    : "https://smart-food-waste-backend.onrender.com");
+    : "https://hack-collab-nu.vercel.app");
 
 console.log("🔌 Socket URL:", SOCKET_URL);
 
