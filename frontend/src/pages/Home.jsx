@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Process from "./Process";
 import Footer from "../components/Footer";
 import CallToAction from "../components/CallToAction";
+import ImpactMap from "../components/ImpactMap";
 
 const processSteps = [
   {
@@ -357,6 +358,7 @@ const Home = () => {
       {/* =====================================================
           STATS
       ===================================================== */}
+<ImpactMap/>
 
       <section className="relative overflow-hidden bg-white py-16">
 
